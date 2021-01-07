@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"golang.stackrox.io/grpc-http1/internal/ioutils"
+	"github.com/realab/go-grpc-http1/internal/ioutils"
 )
 
 type errExtraData int64

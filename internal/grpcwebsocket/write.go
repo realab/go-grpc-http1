@@ -20,8 +20,8 @@ import (
 	"io"
 
 	"github.com/golang/glog"
-	"golang.stackrox.io/grpc-http1/internal/grpcproto"
-	"golang.stackrox.io/grpc-http1/internal/ioutils"
+	"github.com/realab/go-grpc-http1/internal/grpcproto"
+	"github.com/realab/go-grpc-http1/internal/ioutils"
 	"nhooyr.io/websocket"
 )
 

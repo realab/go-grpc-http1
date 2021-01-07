@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"golang.stackrox.io/grpc-http1/internal/grpcproto"
-	"golang.stackrox.io/grpc-http1/internal/sliceutils"
+	"github.com/realab/go-grpc-http1/internal/grpcproto"
+	"github.com/realab/go-grpc-http1/internal/sliceutils"
 )
 
 // wsResponseWriter is a http.ResponseWriter to be used for WebSocket connections.

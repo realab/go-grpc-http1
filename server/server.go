@@ -23,11 +23,11 @@ import (
 	"unicode"
 
 	"github.com/golang/glog"
-	"golang.stackrox.io/grpc-http1/internal/grpcweb"
-	"golang.stackrox.io/grpc-http1/internal/grpcwebsocket"
-	"golang.stackrox.io/grpc-http1/internal/size"
-	"golang.stackrox.io/grpc-http1/internal/sliceutils"
-	"golang.stackrox.io/grpc-http1/internal/stringutils"
+	"github.com/realab/go-grpc-http1/internal/grpcweb"
+	"github.com/realab/go-grpc-http1/internal/grpcwebsocket"
+	"github.com/realab/go-grpc-http1/internal/size"
+	"github.com/realab/go-grpc-http1/internal/sliceutils"
+	"github.com/realab/go-grpc-http1/internal/stringutils"
 	"google.golang.org/grpc"
 	"nhooyr.io/websocket"
 )

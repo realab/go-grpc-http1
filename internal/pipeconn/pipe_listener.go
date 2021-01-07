@@ -19,7 +19,7 @@ import (
 	"errors"
 	"net"
 
-	"golang.stackrox.io/grpc-http1/internal/concurrency"
+	"github.com/realab/go-grpc-http1/internal/concurrency"
 )
 
 const (

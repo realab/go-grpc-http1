@@ -20,8 +20,8 @@ import (
 	"net/http"
 	"strings"
 
-	"golang.stackrox.io/grpc-http1/internal/sliceutils"
-	"golang.stackrox.io/grpc-http1/internal/stringutils"
+	"github.com/realab/go-grpc-http1/internal/sliceutils"
+	"github.com/realab/go-grpc-http1/internal/stringutils"
 )
 
 type responseWriter struct {

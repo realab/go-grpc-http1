@@ -36,9 +36,9 @@ this library. To use the client in gRPC-WebSocket mode, both the client **and** 
 Usage
 -------------
 
-This library has the canonical import path `golang.stackrox.io/grpc-http1`. It fully supports Go modules
+This library has the canonical import path `github.com/realab/go-grpc-http1`. It fully supports Go modules
 and requires Go version 1.13+ to be built and used. To add it as a dependency in your current project,
-run `go get golang.stackrox.io/grpc-http1`.
+run `go get github.com/realab/go-grpc-http1`.
 
 
 ### Server-side
