@@ -96,6 +96,9 @@ func handleGRPCWS(w http.ResponseWriter, req *http.Request, grpcSrv *grpc.Server
 
 func handleGRPCWeb(w http.ResponseWriter, req *http.Request, validPaths map[string]struct{}, grpcSrv *grpc.Server, srvOpts *options) {
 	_, isDowngradableMethod := validPaths[req.URL.Path]
+	if srvOpts.skipValidateMethod {
+		isDowngradableMethod = true
+	}
 
 	// Check for HTTP/2.
 	if req.ProtoMajor != 2 {
