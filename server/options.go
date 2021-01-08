@@ -2,6 +2,7 @@ package server
 
 type options struct {
 	preferGRPCWeb      bool
+	alwaysTryGRPCWeb   bool
 	skipValidateMethod bool
 }
 
@@ -27,5 +28,11 @@ func PreferGRPCWeb(prefer bool) Option {
 func SkipValidateMethod(skip bool) Option {
 	return optionFunc(func(o *options) {
 		o.skipValidateMethod = skip
+	})
+}
+
+func AlwaysTryGRPCWeb(always bool) Option {
+	return optionFunc(func(o *options) {
+		o.alwaysTryGRPCWeb = always
 	})
 }

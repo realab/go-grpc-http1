@@ -130,6 +130,9 @@ func handleGRPCWeb(w http.ResponseWriter, req *http.Request, validPaths map[stri
 		return
 	}
 
+	if srvOpts.alwaysTryGRPCWeb {
+		acceptGRPCWeb = true
+	}
 	if !acceptGRPCWeb {
 		// Client doesn't support trailers and doesn't accept a response downgraded to gRPC web.
 		http.Error(w, "Client neither supports trailers nor gRPC web responses", http.StatusInternalServerError)
