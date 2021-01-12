@@ -95,6 +95,17 @@ func (w *responseWriter) prepareHeadersIfNecessary() {
 // WriteHeader sends HTTP headers to the client, along with the given status code.
 func (w *responseWriter) WriteHeader(statusCode int) {
 	w.prepareHeadersIfNecessary()
+	if w.srvOpts.moveTrailerToHeader {
+		hdr := w.w.Header()
+		for k, vs := range hdr {
+			if !strings.HasPrefix(k, http.TrailerPrefix) {
+				continue
+			}
+			trailerName := http.CanonicalHeaderKey(k[len(http.TrailerPrefix):])
+			hdr[trailerName] = append(hdr[trailerName], vs...)
+			delete(hdr, k)
+		}
+	}
 	w.w.WriteHeader(statusCode)
 }
 
