@@ -149,7 +149,7 @@ func handleGRPCWeb(w http.ResponseWriter, req *http.Request, validPaths map[stri
 	req.Header.Set("TE", "trailers")
 
 	// Downgrade response to gRPC web.
-	transcodingWriter, finalize := grpcweb.NewResponseWriter(w)
+	transcodingWriter, finalize := grpcweb.NewResponseWriter(w, grpcweb.MoveTrailerToHeader(srvOpts.moveTrailerToHeader))
 	grpcSrv.ServeHTTP(transcodingWriter, req)
 	if err := finalize(); err != nil {
 		glog.Errorf("Error sending trailers in downgraded gRPC web response: %v", err)

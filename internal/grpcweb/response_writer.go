@@ -30,6 +30,7 @@ type responseWriter struct {
 	// List of trailers that were announced via the `Trailer` header at the time headers were written. Also used to keep
 	// track of whether headers were already written (in which case this is non-nil, even if it is the empty slice).
 	announcedTrailers []string
+	srvOpts           *options
 }
 
 // NewResponseWriter returns a response writer that transparently transcodes an gRPC HTTP/2 response to a gRPC-Web
@@ -37,10 +38,15 @@ type responseWriter struct {
 // The second return value is a finalization function that takes care of sending the data frame with trailers. It
 // *needs* to be called before the response handler exits successfully (the returned error is simply any error of the
 // underlying response writer passed through).
-func NewResponseWriter(w http.ResponseWriter) (http.ResponseWriter, func() error) {
+func NewResponseWriter(w http.ResponseWriter, opts ...Option) (http.ResponseWriter, func() error) {
 	rw := &responseWriter{
 		w: w,
 	}
+	var serverOpts options
+	for _, opt := range opts {
+		opt.apply(&serverOpts)
+	}
+	rw.srvOpts = &serverOpts
 	return rw, rw.Finalize
 }
 
