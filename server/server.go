@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"unicode"
@@ -148,11 +149,11 @@ func handleGRPCWeb(w http.ResponseWriter, req *http.Request, validPaths map[stri
 	req.Header.Set("TE", "trailers")
 
 	// Downgrade response to gRPC web.
-	transcodingWriter, _ := grpcweb.NewResponseWriter(w, grpcweb.MoveTrailerToHeader(srvOpts.moveTrailerToHeader))
+	transcodingWriter, finalize := grpcweb.NewMossResponseWriter(w)
 	grpcSrv.ServeHTTP(transcodingWriter, req)
-	// if err := finalize(); err != nil {
-	// 	glog.Errorf("Error sending trailers in downgraded gRPC web response: %v", err)
-	// }
+	if err := finalize(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error sending trailers in downgraded gRPC web response: %v", err)
+	}
 }
 
 // CreateDowngradingHandler takes a gRPC server and a plain HTTP handler, and returns an HTTP handler that has the
