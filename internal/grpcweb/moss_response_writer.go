@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/realab/go-grpc-http1/internal/sliceutils"
 )
@@ -21,6 +23,7 @@ type mossResponseWriter struct {
 	status  int
 	headers http.Header
 	body    bytes.Buffer
+	startAt time.Time
 
 	// List of trailers that were announced via the `Trailer` header at the time headers were written. Also used to keep
 	// track of whether headers were already written (in which case this is non-nil, even if it is the empty slice).
@@ -34,9 +37,10 @@ type mossResponseWriter struct {
 // underlying response writer passed through).
 func NewMossResponseWriter(w http.ResponseWriter) (http.ResponseWriter, func() error) {
 	rw := &mossResponseWriter{
-		w:      w,
-		size:   noWritten,
-		status: defaultStatus,
+		w:       w,
+		size:    noWritten,
+		status:  defaultStatus,
+		startAt: time.Now(),
 	}
 	return rw, rw.Finalize
 }
@@ -106,6 +110,9 @@ func (w *mossResponseWriter) Write(buf []byte) (int, error) {
 }
 
 func (w *mossResponseWriter) Finalize() error {
+	w.headers.Set("x-peat-moss-upstream-service-time", strconv.FormatInt(int64(time.Since(w.startAt)/time.Millisecond), 10))
+	w.headers.Set("server", "peat-moss")
+	w.headers.Set("content-length", strconv.FormatInt(int64(w.body.Len()), 10))
 	w.w.WriteHeader(w.status)
 	if _, err := w.w.Write(w.body.Bytes()); err != nil {
 		return err
