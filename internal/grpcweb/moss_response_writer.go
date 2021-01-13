@@ -34,8 +34,9 @@ type mossResponseWriter struct {
 // underlying response writer passed through).
 func NewMossResponseWriter(w http.ResponseWriter) (http.ResponseWriter, func() error) {
 	rw := &mossResponseWriter{
-		w:    w,
-		size: noWritten,
+		w:      w,
+		size:   noWritten,
+		status: defaultStatus,
 	}
 	return rw, rw.Finalize
 }
