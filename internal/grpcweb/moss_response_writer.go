@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/realab/go-grpc-http1/internal/sliceutils"
@@ -75,6 +76,15 @@ func (w *mossResponseWriter) prepareHeadersIfNecessary() {
 	w.announcedTrailers = sliceutils.StringClone(hdr["Trailer"])
 	// Trailers are sent in a data frame, so don't announce trailers as otherwise downstream proxies might get confused.
 	hdr.Del("Trailer")
+
+	for k, vs := range hdr {
+		if !strings.HasPrefix(k, http.TrailerPrefix) {
+			continue
+		}
+		trailerName := http.CanonicalHeaderKey(k[len(http.TrailerPrefix):])
+		hdr[trailerName] = vs
+		delete(hdr, k)
+	}
 
 	// Any content length that might be set is no longer accurate because of trailers.
 	hdr.Del("Content-Length")
