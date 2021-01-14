@@ -59,7 +59,6 @@ func (w *mossResponseWriter) Header() http.Header {
 // Flush flushes any data not yet written. In contrast to most `http.ResponseWriter` implementations, it does not send
 // headers if no data has been written yet.
 func (w *mossResponseWriter) Flush() {
-	w.prepareHeadersIfNecessary()
 	hdr := w.w.Header()
 	for k, vs := range w.headers {
 		hdr[k] = vs
@@ -72,7 +71,7 @@ func (w *mossResponseWriter) prepareHeadersIfNecessary() {
 		return
 	}
 
-	hdr := w.w.Header()
+	hdr := w.Header()
 	w.announcedTrailers = sliceutils.StringClone(hdr["Trailer"])
 	// Trailers are sent in a data frame, so don't announce trailers as otherwise downstream proxies might get confused.
 	hdr.Del("Trailer")
