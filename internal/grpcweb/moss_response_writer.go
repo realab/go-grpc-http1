@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/realab/go-grpc-http1/internal/sliceutils"
@@ -96,22 +95,19 @@ func (w *mossResponseWriter) WriteHeader(statusCode int) {
 		}
 		w.status = statusCode
 	}
-	w.prepareHeadersIfNecessary()
 	w.status = statusCode
 }
 
 // Write writes a chunk of data.
 func (w *mossResponseWriter) Write(buf []byte) (int, error) {
 	w.WriteHeaderNow()
-	w.prepareHeadersIfNecessary()
 	n, err := w.body.Write(buf)
 	w.size += n
 	return n, err
 }
 
 func (w *mossResponseWriter) Finalize() error {
-	w.headers.Set("x-peat-moss-upstream-service-time", strconv.FormatInt(int64(time.Since(w.startAt)/time.Millisecond), 10))
-	w.headers.Set("server", "peat-moss")
+	w.prepareHeadersIfNecessary()
 	w.w.WriteHeader(w.status)
 	if _, err := w.w.Write(w.body.Bytes()); err != nil {
 		return err

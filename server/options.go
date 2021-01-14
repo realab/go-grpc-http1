@@ -1,10 +1,9 @@
 package server
 
 type options struct {
-	preferGRPCWeb       bool
-	alwaysTryGRPCWeb    bool
-	skipValidateMethod  bool
-	moveTrailerToHeader bool
+	preferGRPCWeb      bool
+	alwaysTryGRPCWeb   bool
+	skipValidateMethod bool
 }
 
 // Option is an object that controls the behavior of the downgrading gRPC server.
@@ -35,11 +34,5 @@ func SkipValidateMethod(skip bool) Option {
 func AlwaysTryGRPCWeb(always bool) Option {
 	return optionFunc(func(o *options) {
 		o.alwaysTryGRPCWeb = always
-	})
-}
-
-func MoveTrailerToHeader(move bool) Option {
-	return optionFunc(func(o *options) {
-		o.moveTrailerToHeader = move
 	})
 }
