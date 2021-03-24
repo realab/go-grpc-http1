@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,8 +13,10 @@ import (
 )
 
 const (
-	noWritten     = -1
-	defaultStatus = http.StatusOK
+	noWritten          = -1
+	defaultStatus      = http.StatusOK
+	forceRetryStatus   = http.StatusInternalServerError
+	GRPCStatusDataLoss = 15
 )
 
 type mossResponseWriter struct {
@@ -88,6 +91,11 @@ func (w *mossResponseWriter) prepareHeadersIfNecessary() {
 
 	// Any content length that might be set is no longer accurate because of trailers.
 	hdr.Del("Content-Length")
+
+	// Check grpc-status and mark response as 500 status code for LB retry further.
+	if w.markAsRetryResponse() {
+		w.status = forceRetryStatus
+	}
 }
 
 func (w *mossResponseWriter) WriteHeaderNow() {
@@ -113,6 +121,19 @@ func (w *mossResponseWriter) Write(buf []byte) (int, error) {
 	n, err := w.body.Write(buf)
 	w.size += n
 	return n, err
+}
+
+func (w *mossResponseWriter) markAsRetryResponse() bool {
+	hdr := w.Header()
+	rawStatus := hdr.Get("Grpc-Status")
+	if rawStatus == "" {
+		return false
+	}
+	grpcStatus, err := strconv.ParseInt(rawStatus, 10, 64)
+	if err != nil {
+		return false
+	}
+	return grpcStatus == GRPCStatusDataLoss
 }
 
 func (w *mossResponseWriter) Finalize() error {
